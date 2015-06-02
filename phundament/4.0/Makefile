@@ -15,7 +15,7 @@ PHP_SERVICE_SUFFIX 		?= fpm
 WEB_SERVICE_SUFFIX 		?= nginx
 COMPOSE_FILE			?= docker-compose.yml
 
-APP_SRC_PATH		 		?= /app
+APP_SRC_PATH		 		?= ./src
 APP_ASSETS_SRC_LESS 		?= $(APP_SRC_PATH)/assets/less/app.less
 APP_ASSETS_DEST_CSS 		?= $(APP_SRC_PATH)/assets/web/css/app.css
 APP_ASSETS_CONFIG_PROD 		?= $(APP_SRC_PATH)/config/assets-prod.php
@@ -149,9 +149,9 @@ _assets-pre:
 	# Preparing asset output folders
 	# $(CWD)
 	# TODO: this is just a workaround for asset issue
-	rm -rf src/config/assets-gen
-	mkdir -p src/config/assets-gen/
-	touch src/config/assets-gen/dev.php ./src/config/assets-gen/prod.php
+	rm -rf $(APP_SRC_PATH)/config/assets-gen
+	mkdir -p $(APP_SRC_PATH)/config/assets-gen/
+	touch $(APP_SRC_PATH)/config/assets-gen/dev.php ./$(APP_SRC_PATH)/config/assets-gen/prod.php
 
 	rm -rf web/assets-prod
 	rm -rf web/assets-dev
