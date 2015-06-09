@@ -73,14 +73,29 @@ Customize
 ---------
 
 Go to a project with a `docker-compose` file located in the root folder and create a `Makefile`.
+
+### Basic example
+    
+    # Project Settings
+    # ----------------
+    
+    COMPOSE_PROJECT_NAME    ?= elk
+    
+    # Templates
+    # ---------
+    
+    include $(DOMA_DIR)/docker/Makefile
+
+
+### Advanced example    
     
 Adjust the `Makefile` file in your project with your basic project settings...
 
     # Settings
     # --------
     
-    COMPOSE_PROJECT_NAME := myapp
-    COMPOSE_FILE ?= docker-compose.yml
+    COMPOSE_PROJECT_NAME    ?= myapp
+    COMPOSE_FILE            ?= docker-compose.yml
 
     REGISTRY_HOST	 ?= registry.hrzg.de
     REGISTRY_USER	 ?= registry
@@ -164,6 +179,10 @@ One-liner to install doma e.g. on your CI system
     # instant-doma (Makefile templates)
     if [ -d doma ] ; then git -C doma pull ; else git clone git@git.hrzg.de:t.munk/doma.git doma ; fi ; export DOMA_DIR=`pwd`/doma
 
+Contribute
+----------
+
+PRs are always highly welcome.
 
 Author
 ------
