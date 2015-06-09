@@ -66,8 +66,8 @@ app-build-stacks:	  				##@install create docker-compose.yml files from stack te
 		./yii yaml/convert-docker-compose \
 			--dockerComposeFile=@root/docker-compose.yml \
 			--templateDirectory=@root/build/stacks-tpl \
-			--templateReplacementsFile=@root/build/stacks-tpl/replacements.php \
-			--outputDirectory=@root/build/stacks-gen
+			--outputDirectory=@root/build/stacks-gen \
+			$(OPTS)
 
 .PHONY: app-init
 app-init: _init-env app-install  	##@install initializes environment and installs Phundament application
