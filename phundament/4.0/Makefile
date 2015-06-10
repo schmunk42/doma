@@ -141,16 +141,12 @@ app-assets: _assets-pre
 	du -h web/assets-prod/js/*
 	du -hs web/assets-prod/
 
-#assets: config/assets-gen
-	# Target 'assets' - Done.
-
 _assets-pre:
 	# ---------------------------
 	#
 	# Preparing asset output folders
 	# $(CWD)
 	# TODO: this is just a workaround for asset issue
-	rm -rf $(APP_SRC_PATH)/config/assets-gen
 	mkdir -p $(APP_SRC_PATH)/config/assets-gen/
 	touch $(APP_SRC_PATH)/config/assets-gen/dev.php ./$(APP_SRC_PATH)/config/assets-gen/prod.php
 
