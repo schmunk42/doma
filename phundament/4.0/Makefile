@@ -67,6 +67,7 @@ app-build-stacks:	  				##@install create docker-compose.yml files from stack te
 			--dockerComposeFile=@root/docker-compose.yml \
 			--templateDirectory=@root/build/stacks-tpl \
 			--outputDirectory=@root/build/stacks-gen \
+			--templateReplacementsFile=@root/build/stacks-tpl/env.yml \
 			$(OPTS)
 
 .PHONY: app-init
