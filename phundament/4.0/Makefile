@@ -100,6 +100,7 @@ app-setup:	##@install prepare application runtime
 		run --rm -e YII_ENV=$(YII_ENV) $(APP_NAME)$(WORKER_SERVICE_SUFFIX) \
 		sh -c '\
 			/app/yii app/create-mysql-db && \
+			sleep 1 && \
 			/app/yii migrate --interactive=0 --migrationLookup=$(APP_MIGRATION_LOOKUP) && \
 			/app/yii app/setup-admin-user admin --interactive=0 \
 		'
