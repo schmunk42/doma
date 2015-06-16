@@ -23,6 +23,8 @@ APP_ASSETS_CONFIG_DEV 		?= $(APP_SRC_PATH)/config/assets-dev.php
 APP_ASSETS_GENERATED_CONFIGS?= $(APP_SRC_PATH)/config/assets-gen
 APP_MIGRATION_LOOKUP 		?= @app/migrations
 
+TEST_OUTPUT_PATH			?= /app/_output/latest
+
 
 # Add this Makefile's targets to help
 # -----------------------------------
@@ -188,7 +190,7 @@ app-bash: docker-bash		##@running run an interactive shell in application contai
 app-clean-tests:	##@testing clean up codeception test output
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm \
 			-e YII_ENV=test $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
-			sh -c 'rm -rf /app/tests/codeception/_output/*'
+			sh -c 'rm -rf $(TEST_OUTPUT_PATH)'
 
 .PHONY: app-build-tests
 app-build-tests:	##@testing build codeception tests
@@ -251,8 +253,8 @@ app-status:
 
 .PHONY: app-linkcheck
 app-linkcheck:		##@status run a linkcheck for your app
-	docker-compose run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) cat /etc/hosts
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(WORKER_SERVICE_SUFFIX) linkchecker -F csv/utf8//app/data/linkcheck.csv http://WEB/ ; \
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(WORKER_SERVICE_SUFFIX) sh -c 'mkdir -p $(TEST_OUTPUT_PATH) && touch $(TEST_OUTPUT_PATH)/linkcheck.html && chmod 777 -R $(TEST_OUTPUT_PATH)'
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(WORKER_SERVICE_SUFFIX) linkchecker -F html/utf8/$(TEST_OUTPUT_PATH)/linkcheck.html http://WEB/ ; \
 
 .PHONY: app-vhost
 app-vhost:		##@status show virtual host configuration variables
