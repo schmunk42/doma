@@ -179,7 +179,7 @@ docker-up:			##@docker Bring up all containers in stack
 	#
 	# Creating stack (detached mode)
 	#
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) up -d
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) up -d $(OPTS)
 
 
 .PHONY: docker-check
