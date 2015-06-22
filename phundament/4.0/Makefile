@@ -190,7 +190,7 @@ app-bash: docker-bash		##@running run an interactive shell in application contai
 app-clean-tests:	##@testing clean up codeception test output
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm \
 			-e YII_ENV=test $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
-			sh -c 'rm -rf $(TEST_OUTPUT_PATH)'
+			sh -c 'codecept clean'
 
 .PHONY: app-build-tests
 app-build-tests:	##@testing build codeception tests
