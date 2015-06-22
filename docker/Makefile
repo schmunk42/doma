@@ -109,7 +109,7 @@ docker-login:
 	# DISABLED: docker login --username=$(REGISTRY_USER) --password=$(REGISTRY_PASS) --email=noreply@example.com $(REGISTRY_HOST)
 	#
 	# docker-compose login
-	docker login --username=$(REGISTRY_USER) --password=$(REGISTRY_PASS) --email=noreply@example.com https://$(REGISTRY_HOST)/v1/
+	docker login --username="$(REGISTRY_USER)" --password="$(REGISTRY_PASS)" --email="noreply@example.com" https://$(REGISTRY_HOST)/v1/
 
 .PHONY: docker-logs
 docker-logs:
