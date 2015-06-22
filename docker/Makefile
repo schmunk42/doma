@@ -8,17 +8,17 @@ PROJECT_REGISTRY ?= $(REGISTRY_HOST)/$(REGISTRY_USER)
 
 APP_NAME  ?= app
 
-BUILDER_SERVICE_SUFFIX ?=
-WORKER_SERVICE_SUFFIX ?=
-WEB_SERVICE_SUFFIX ?=
+BUILDER_SERVICE_SUFFIX 	?=
+WORKER_SERVICE_SUFFIX 	?=
+WEB_SERVICE_SUFFIX 		?=
 
-COMPOSE_FILE			?= docker-compose.yml
+IMAGE_NAME 		?= $(COMPOSE_PROJECT_NAME)-$(APP_NAME)$(BUILDER_SERVICE_SUFFIX)
+IMAGE_VERSION 	?= latest
 
-DOCKER_HOST_IP=$(shell echo $(DOCKER_HOST) | sed 's/tcp:\/\///' | sed 's/:[0-9.]*//')
+COMPOSE_FILE		?= docker-compose.yml
+DOCKER_HOST_IP 		?= $(shell echo $(DOCKER_HOST) | sed 's/tcp:\/\///' | sed 's/:[0-9.]*//')
+DOMA_ENVIRONMENT 	?= ""
 
-DOMA_ENVIRONMENT ?= ""
-
-version ?= latest
 
 
 # Add this Makefile's targets to help
@@ -131,7 +131,7 @@ docker-push: docker-login		##@docker Push project images to registry
 	#
 	# Pushing images to repository
 	#
-	docker push $(PROJECT_REGISTRY)/$(COMPOSE_PROJECT_NAME)-$(APP_NAME)$(BUILDER_SERVICE_SUFFIX):$(version)
+	docker push $(PROJECT_REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
 
 .PHONY: docker-rm
 docker-rm:
@@ -162,7 +162,6 @@ docker-stop:		##@docker Stop project stack
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) stop
 
 .PHONY: docker-tag
-docker-tag: IMAGE_NAME ?= $(COMPOSE_PROJECT_NAME)-$(APP_NAME)$(BUILDER_SERVICE_SUFFIX)
 docker-tag:    	##@docker Tag images for registry, if build and tests have been passed
 #
 	#
@@ -171,7 +170,7 @@ docker-tag:    	##@docker Tag images for registry, if build and tests have been 
 	###version := $(shell cat VERSION)
 	docker tag -f \
 		$(COMPOSE_PROJECT_NAME)_$(APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
-		$(PROJECT_REGISTRY)/$(IMAGE_NAME):$(version)
+		$(PROJECT_REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
 	docker images $(PROJECT_REGISTRY)/$(IMAGE_NAME)
 
 .PHONY: docker-up
