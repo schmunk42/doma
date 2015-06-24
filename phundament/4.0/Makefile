@@ -25,6 +25,10 @@ APP_MIGRATION_LOOKUP 		?= @app/migrations
 
 TEST_OUTPUT_PATH			?= /app/_output/latest
 
+DOCS_OUTPUT_PATH			?= runtime/docs
+DOCS_API_PATHS 				?= src
+DOCS_GUIDE_PATHS 			?= docs
+
 
 # Add this Makefile's targets to help
 # -----------------------------------
@@ -270,6 +274,15 @@ app-less:		##@status start a LESS watcher
 	# Usage: make watch app=<APP_NAME>
 	#
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) watch lessc $(APP_ASSETS_SRC_LESS) $(APP_ASSETS_DEST_CSS)
+
+.PHONY: app-build-docs
+app-build-docs:		##@developer generate application documentation
+	#
+	# Generating application documentation
+	#
+	### TODO: docker-compose run app$(BUILDER_SERVICE_SUFFIX) docco -o runtime/docco src/config/main.php src/config/env.php build/ci/test.sh web/index.php
+	docker-compose run app$(BUILDER_SERVICE_SUFFIX) vendor/bin/apidoc api $(DOCS_API_PATHS) $(DOCS_OUTPUT_PATH) --pageTitle="$(APP_NAME) API" --interactive=0
+	docker-compose run app$(BUILDER_SERVICE_SUFFIX) vendor/bin/apidoc guide $(DOCS_GUIDE_PATHS) $(DOCS_OUTPUT_PATH) --pageTitle="$(APP_NAME) Guide" --interactive=0
 
 
 # App specific AWS targets
