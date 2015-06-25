@@ -186,11 +186,6 @@ docker-check:
 	# docker-compose requirement >= 1.2.0
 	docker-compose --version
 
-.PHONY: dockerhost-cleanup
-dockerhost-cleanup:	##@docker /!\ EXPERIMENTAL
-	docker rmi `docker images -f "dangling=true" -q
-	docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes
-
 # Catch and propagate inherited targets
 # -------------------------------------
 

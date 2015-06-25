@@ -112,7 +112,7 @@ app-setup:	##@install prepare application runtime
 		'
 
 .PHONY: app-upgrade
-app-upgrade: _update-packages 	##@install /!\ EXPERIMENTAL /!\ update application packages
+app-upgrade: _update-packages 	##@install update application packages
 
 _update-packages:
 	#
@@ -281,8 +281,8 @@ app-build-docs:		##@developer generate application documentation
 	# Generating application documentation
 	#
 	### TODO: docker-compose run app$(BUILDER_SERVICE_SUFFIX) docco -o runtime/docco src/config/main.php src/config/env.php build/ci/test.sh web/index.php
-	docker-compose run app$(BUILDER_SERVICE_SUFFIX) vendor/bin/apidoc api $(DOCS_API_PATHS) $(DOCS_OUTPUT_PATH) --pageTitle="$(APP_NAME) API" --interactive=0
-	docker-compose run app$(BUILDER_SERVICE_SUFFIX) vendor/bin/apidoc guide $(DOCS_GUIDE_PATHS) $(DOCS_OUTPUT_PATH) --pageTitle="$(APP_NAME) Guide" --interactive=0
+	docker-compose run app$(BUILDER_SERVICE_SUFFIX) vendor/bin/apidoc api $(DOCS_API_PATHS) $(DOCS_OUTPUT_PATH) --pageTitle="$(APP_NAME)" --interactive=0
+	docker-compose run app$(BUILDER_SERVICE_SUFFIX) vendor/bin/apidoc guide $(DOCS_GUIDE_PATHS) $(DOCS_OUTPUT_PATH) --pageTitle="$(APP_NAME)" --interactive=0
 
 
 # App specific AWS targets
