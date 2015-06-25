@@ -165,7 +165,7 @@ _assets-pre:
 .PHONY: app-update-version
 app-update-version:		##@install 
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
-		./yii app/version
+		./yii app/version /app/version
 
 # App running targets
 # -------------------
