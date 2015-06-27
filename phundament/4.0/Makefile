@@ -108,7 +108,7 @@ app-setup:	##@install prepare application runtime
 			/app/yii app/create-mysql-db && \
 			sleep 1 && \
 			/app/yii migrate --interactive=0 --migrationLookup=$(APP_MIGRATION_LOOKUP) && \
-			/app/yii app/setup-admin-user admin --interactive=0 \
+			/app/yii app/setup-admin-user --interactive=0 \
 		'
 
 .PHONY: app-upgrade
