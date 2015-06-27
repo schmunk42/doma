@@ -184,6 +184,10 @@ app-stop: docker-stop		##@running stop application
 .PHONY: app-open
 app-open: docker-open		##@running open application web service
 
+.PHONY: app-run
+app-run: SERVICE=$(APP_NAME)$(WORKER_SERVICE_SUFFIX)
+app-run: docker-run		##@running run an interactive shell in application container
+
 .PHONY: app-bash
 app-bash: docker-bash		##@running run an interactive shell in application container
 
