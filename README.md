@@ -31,6 +31,8 @@ and push images and running containers.
 Installation
 ------------
 
+### Globally
+
 Get doma by cloning the repository into a location of your choice
 
     git clone git@git.hrzg.de:t.munk/doma.git
@@ -38,6 +40,11 @@ Get doma by cloning the repository into a location of your choice
 Link the script to a directory from `PATH` and set permissions    
     
     echo -e "export DOMA_DIR=`pwd`/doma" >> ~/.bash_profile
+
+### Per-project
+
+You can also put doma `Makefile`s into your project folder, or include them as a submodule.
+
 
 Basic usage
 -----------
@@ -137,6 +144,21 @@ Finally add your configuration targets.
     crud: ##@app build/crud.sh
     	@sh build/crud.sh
 
+### Multiple sub-stacks
+
+To forward targets to sub-stack you can use the following targets:
+
+```
+.EXPORT_ALL_VARIABLES:
+.DEFAULT:
+	@for folder in $(APP_FOLDERS); do \
+		echo \# --------------------------------------------- ; \
+		echo \# ; \
+		echo \# Running \'make $@\' in folder \'$$folder\' ; \
+		echo \# ; \
+		$(MAKE) -C $$folder COMPOSE_FILE=../$(COMPOSE_FILE) $@ ; \
+	done
+```
 
 ### Naming
 
