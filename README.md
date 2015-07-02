@@ -138,12 +138,6 @@ Finally add your configuration targets.
         $(eval COMPOSE_FILE := docker-compose-test-local.yml)
         $(eval COMPOSE_PROJECT_NAME := testmyapp)
 
-    # Local development
-    # -----------------
-    
-    crud: ##@app build/crud.sh
-    	@sh build/crud.sh
-
 ### Multiple sub-stacks
 
 To forward targets to sub-stack you can use the following targets:
