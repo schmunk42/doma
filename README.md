@@ -201,7 +201,6 @@ Author
     
 - Tobias Munk (schmunk42)
 - Tim Gleue
-- [diemeisterei](http://diemeisterei.de)
 
 Links
 -----
@@ -209,3 +208,4 @@ Links
 - [GitHub](https://github.com/schmunk42/doma)
 - [docker-stack](https://github.com/neam/docker-stack) - docker-compose stack templates 
 - [Phundament](http://phundament.com)
+- [diemeisterei](http://diemeisterei.de)
