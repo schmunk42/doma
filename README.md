@@ -189,7 +189,7 @@ Tips
 One-liner to install doma e.g. on your CI system
 
     # instant-doma (Makefile templates)
-    if [ -d doma ] ; then git -C doma pull ; else git clone git@git.hrzg.de:t.munk/doma.git doma ; fi ; export DOMA_DIR=`pwd`/doma
+    if [ -d doma ] ; then git -C doma pull ; else git clone https://github.com/schmunk42/doma.git doma ; fi ; export DOMA_DIR=`pwd`/doma
 
 Contribute
 ----------
