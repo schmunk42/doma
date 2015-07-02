@@ -152,10 +152,6 @@ To forward targets to sub-stack you can use the following targets:
 .EXPORT_ALL_VARIABLES:
 .DEFAULT:
 	@for folder in $(APP_FOLDERS); do \
-		echo \# --------------------------------------------- ; \
-		echo \# ; \
-		echo \# Running \'make $@\' in folder \'$$folder\' ; \
-		echo \# ; \
 		$(MAKE) -C $$folder COMPOSE_FILE=../$(COMPOSE_FILE) $@ ; \
 	done
 ```
