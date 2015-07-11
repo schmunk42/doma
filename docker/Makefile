@@ -135,7 +135,7 @@ docker-push: docker-login		##@docker Push project images to registry
 
 .PHONY: docker-rm
 docker-rm:
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) rm --force $(SERVICE)
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) rm -v --force $(SERVICE)
 
 .PHONY: docker-run
 docker-run:		##@docker /!\ EXPERIMENTAL /!\ Usage: make docker-run service=<service> cmd=<command> run a command off a project service
