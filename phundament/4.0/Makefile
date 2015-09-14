@@ -123,7 +123,7 @@ _update-packages:
 		composer update -v --optimize-autoloader
 
 .PHONY: app-build
-app-build: 						##@install Build application image
+app-build: 	app-update-version					##@install Build application image
 	# ------------------------------------------------------------
 	#
 	# Building services for app '$(APP_NAME)' in stack '$(COMPOSE_PROJECT_NAME)'
