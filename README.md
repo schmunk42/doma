@@ -108,8 +108,8 @@ Adjust the `Makefile` file in your project with your basic project settings...
     REGISTRY_USER	 ?= registry
     PROJECT_REGISTRY ?= registry.hrzg.de/tci-partners
     
-    APP_NAMES   ?= app
-    APP_FOLDERS ?= .
+    DOMA_APP_NAMES   ?= app
+    DOMA_APP_FOLDERS ?= .
     
     BUILDER_SERVICE_SUFFIX 	?= builder
     TEST_VERBOSITY			?=-v
@@ -164,8 +164,8 @@ COMPOSE_PROJECT_NAME=yii2project
 You can add multiple apps by using a prefix, make sure that both lists correspond exactly!
 
 ```
-APP_NAMES   = app    api     
-APP_FOLDERS = ./app  ./api
+DOMA_APP_NAMES   = app    api     
+DOMA_APP_FOLDERS = ./app  ./api
 ```
 
 ### File-structure
