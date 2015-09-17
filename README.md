@@ -31,6 +31,8 @@ and push images and running containers.
 Installation
 ------------
 
+### Globally
+
 Get doma by cloning the repository into a location of your choice
 
     git clone git@git.hrzg.de:t.munk/doma.git
@@ -38,6 +40,11 @@ Get doma by cloning the repository into a location of your choice
 Link the script to a directory from `PATH` and set permissions    
     
     echo -e "export DOMA_DIR=`pwd`/doma" >> ~/.bash_profile
+
+### Per-project
+
+You can also put doma `Makefile`s into your project folder, or include them as a submodule.
+
 
 Basic usage
 -----------
@@ -131,12 +138,17 @@ Finally add your configuration targets.
         $(eval COMPOSE_FILE := docker-compose-test-local.yml)
         $(eval COMPOSE_PROJECT_NAME := testmyapp)
 
-    # Local development
-    # -----------------
-    
-    crud: ##@app build/crud.sh
-    	@sh build/crud.sh
+### Multiple sub-stacks
 
+To forward targets to sub-stack you can use the following targets:
+
+```
+.EXPORT_ALL_VARIABLES:
+.DEFAULT:
+	@for folder in $(APP_FOLDERS); do \
+		$(MAKE) -C $$folder COMPOSE_FILE=../$(COMPOSE_FILE) $@ ; \
+	done
+```
 
 ### Naming
 
@@ -177,7 +189,7 @@ Tips
 One-liner to install doma e.g. on your CI system
 
     # instant-doma (Makefile templates)
-    if [ -d doma ] ; then git -C doma pull ; else git clone git@git.hrzg.de:t.munk/doma.git doma ; fi ; export DOMA_DIR=`pwd`/doma
+    if [ -d doma ] ; then git -C doma pull ; else git clone https://github.com/schmunk42/doma.git doma ; fi ; export DOMA_DIR=`pwd`/doma
 
 Contribute
 ----------
@@ -189,7 +201,6 @@ Author
     
 - Tobias Munk (schmunk42)
 - Tim Gleue
-- [diemeisterei](http://diemeisterei.de)
 
 Links
 -----
@@ -197,3 +208,4 @@ Links
 - [GitHub](https://github.com/schmunk42/doma)
 - [docker-stack](https://github.com/neam/docker-stack) - docker-compose stack templates 
 - [Phundament](http://phundament.com)
+- [diemeisterei](http://diemeisterei.de)

@@ -20,7 +20,7 @@ COMPOSE_FILE		?= docker-compose.yml
 DOCKER_HOST_IP 		?= $(shell echo $(DOCKER_HOST) | sed 's/tcp:\/\///' | sed 's/:[0-9.]*//')
 DOMA_ENVIRONMENT 	?= ""
 
-
+include ../phundament/4.0/Makefile
 
 # Add this Makefile's targets to help
 # -----------------------------------
@@ -71,7 +71,7 @@ docker-bash:		##@docker app=<prefix> Run a bash in builder container of
 
 
 .PHONY: docker-build
-docker-build:		##@docker Build images for all services
+docker-build: app-update-version		##@docker Build images for all services
 	# ------------------------------------------------------------
 	#
 	# Building all services in stack '$(COMPOSE_PROJECT_NAME)'
@@ -136,7 +136,7 @@ docker-push: docker-login		##@docker Push project images to registry
 
 .PHONY: docker-rm
 docker-rm:
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) rm --force $(SERVICE)
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) rm -v --force $(SERVICE)
 
 .PHONY: docker-run
 docker-run:		##@docker /!\ EXPERIMENTAL /!\ Usage: make docker-run service=<service> cmd=<command> run a command off a project service
