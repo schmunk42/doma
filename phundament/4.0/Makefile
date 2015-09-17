@@ -6,7 +6,7 @@
 
 .PHONY: no_targets__
 
-APP_NAME  	?= app
+DOMA_APP_NAME  	?= app
 YII_ENV		?= dev
 
 WORKER_SERVICE_SUFFIX 	?= cli
@@ -68,7 +68,7 @@ all-no-build: app-pull app-setup app-up app-open
 
 .PHONY: app-build-stacks
 app-build-stacks:	  				##@install create docker-compose.yml files from stack templates (define @root for changing output folders)
-	docker-compose run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
+	docker-compose  -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
 		./yii yaml/convert-docker-compose \
 			--dockerComposeFile=@root/docker-compose.yml \
 			--templateDirectory=@root/build/stacks-tpl \
@@ -94,7 +94,7 @@ _install-packages:
 	#
 	# Installing Docker stack ($(COMPOSE_FILE))
 	#
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) composer install $(OPTS)
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) composer install $(OPTS)
 
 .PHONY: app-setup
 app-setup:	##@install prepare application runtime 
@@ -103,7 +103,7 @@ app-setup:	##@install prepare application runtime
 	# Setting up database, schema and admin user ($(COMPOSE_FILE))
 	#	
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) \
-		run --rm -e YII_ENV=$(YII_ENV) $(APP_NAME)$(WORKER_SERVICE_SUFFIX) \
+		run --rm -e YII_ENV=$(YII_ENV) $(DOMA_APP_NAME)$(WORKER_SERVICE_SUFFIX) \
 		sh -c '\
 			/app/yii app/create-mysql-db && \
 			sleep 1 && \
@@ -116,20 +116,20 @@ app-upgrade: _update-packages 	##@install update application packages
 
 _update-packages:
 	#
-	# Updating application packages for application '$(APP_NAME)'
+	# Updating application packages for application '$(DOMA_APP_NAME)'
 	#
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) \
-		run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
+		run --rm $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
 		composer update -v --optimize-autoloader
 
 .PHONY: app-build
 app-build: 						##@install Build application image
 	# ------------------------------------------------------------
 	#
-	# Building services for app '$(APP_NAME)' in stack '$(COMPOSE_PROJECT_NAME)'
+	# Building services for app '$(DOMA_APP_NAME)' in stack '$(COMPOSE_PROJECT_NAME)'
 	# ($(COMPOSE_FILE))
 	#
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) build $(APP_NAME)$(BUILDER_SERVICE_SUFFIX)
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) build $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX)
 	docker images $(COMPOSE_PROJECT_NAME)_*
 
 
@@ -141,9 +141,8 @@ app-assets: _assets-pre
 	# $(CWD)
 	#
 	# TODO: create assets (dev/prod) with param
-	@echo "Compressing assets for application '$(APP_NAME)'" $(APP_ASSETS_SRC_LESS) $(APP_ASSETS_DEST_CSS)
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) lessc $(APP_ASSETS_SRC_LESS) $(APP_ASSETS_DEST_CSS)
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) /app/yii asset $(APP_ASSETS_CONFIG_PROD) $(APP_ASSETS_GENERATED_CONFIGS)/prod.php
+	@echo "Compressing assets for application '$(DOMA_APP_NAME)'" $(APP_ASSETS_SRC_LESS) $(APP_ASSETS_DEST_CSS)
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) /app/yii asset $(APP_ASSETS_CONFIG_PROD) $(APP_ASSETS_GENERATED_CONFIGS)/prod.php
 	du -h web/assets-prod/css/*
 	du -h web/assets-prod/js/*
 	du -hs web/assets-prod/
@@ -164,19 +163,19 @@ _assets-pre:
 
 .PHONY: app-update-version
 app-update-version:		##@install 
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
 		./yii app/version /app/version
 
 # App running targets
 # -------------------
 
 .PHONY: app-up
-app-up:			##@app Bring app APP_NAME up
+app-up:			##@app Bring app DOMA_APP_NAME up
 	#
-	# Creating app '$(APP_NAME)' (detached mode)
+	# Creating app '$(DOMA_APP_NAME)' (detached mode)
 	#
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) up -d --no-recreate \
-		$(APP_NAME)$(WEB_SERVICE_SUFFIX)
+		$(DOMA_APP_NAME)$(WEB_SERVICE_SUFFIX)
 
 .PHONY: app-stop
 app-stop: docker-stop		##@running stop application
@@ -185,7 +184,7 @@ app-stop: docker-stop		##@running stop application
 app-open: docker-open		##@running open application web service
 
 .PHONY: app-run
-app-run: SERVICE=$(APP_NAME)$(WORKER_SERVICE_SUFFIX)
+app-run: SERVICE=$(DOMA_APP_NAME)$(WORKER_SERVICE_SUFFIX)
 app-run: docker-run		##@running run an interactive shell in application container
 
 .PHONY: app-bash
@@ -197,13 +196,13 @@ app-bash: docker-bash		##@running run an interactive shell in application contai
 .PHONY: app-clean-tests
 app-clean-tests:	##@testing clean up codeception test output
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm \
-			-e YII_ENV=test $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
+			-e YII_ENV=test $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
 			sh -c 'codecept clean'
 
 .PHONY: app-build-tests
 app-build-tests:	##@testing build codeception tests
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm \
-			-e YII_ENV=test $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
+			-e YII_ENV=test $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
 			sh -c 'codecept build'
 
 .PHONY: app-run-tests
@@ -213,10 +212,10 @@ app-run-tests:		##@testing test application; OPTS='-v acceptance prod'
 	# Starting application tests ($(COMPOSE_FILE))
 	#
 	# TODO: remove this line, when linked containers start up reliably on docker-compose run
-	#docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) up -d $(APP_NAME)$(WORKER_SERVICE_SUFFIX)
+	#docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) up -d $(DOMA_APP_NAME)$(WORKER_SERVICE_SUFFIX)
 
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) \
-		run --rm -e YII_ENV=test -e SCREENSHOT_SUFFIX=$(REPORT_SUFFIX) $(APP_NAME)$(WORKER_SERVICE_SUFFIX) \
+		run --rm -e YII_ENV=test -e SCREENSHOT_SUFFIX=$(REPORT_SUFFIX) $(DOMA_APP_NAME)$(WORKER_SERVICE_SUFFIX) \
 		sh -c 'codecept run $(OPTS) --html=_report$(REPORT_SUFFIX).html'
 
 
@@ -242,42 +241,42 @@ app-info:			##@status project info
 	# Stack File	   : $(COMPOSE_FILE)
 	#
 	# ___Apps & Folders___
-	# $(APP_NAME)
+	# $(DOMA_APP_NAME)
 	# ---------------------------------
 
 .PHONY: app-show-installed
 app-show-installed:		##@status installed packages
 	#
-	# Composer packages for '$(APP_NAME)'
+	# Composer packages for '$(DOMA_APP_NAME)'
 	#
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) composer show -i
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) composer show -i
 
 .PHONY: app-status
 app-status:
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) env
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) env
 	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm \
-		$(APP_NAME)$(BUILDER_SERVICE_SUFFIX) cat /etc/hosts
+		$(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) cat /etc/hosts
 	boot2docker ssh df -h | grep sda1
 
 .PHONY: app-linkcheck
 app-linkcheck:		##@status run a linkcheck for your app
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(WORKER_SERVICE_SUFFIX) sh -c 'mkdir -p $(TEST_OUTPUT_PATH) && touch $(TEST_OUTPUT_PATH)/linkcheck.html && chmod 777 -R $(TEST_OUTPUT_PATH)'
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(WORKER_SERVICE_SUFFIX) linkchecker -F html/utf8/$(TEST_OUTPUT_PATH)/linkcheck.html http://WEB/ ; \
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(DOMA_APP_NAME)$(WORKER_SERVICE_SUFFIX) sh -c 'mkdir -p $(TEST_OUTPUT_PATH) && touch $(TEST_OUTPUT_PATH)/linkcheck.html && chmod 777 -R $(TEST_OUTPUT_PATH)'
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(DOMA_APP_NAME)$(WORKER_SERVICE_SUFFIX) linkchecker -F html/utf8/$(TEST_OUTPUT_PATH)/linkcheck.html http://WEB/ ; \
 
 .PHONY: app-vhost
 app-vhost:		##@status show virtual host configuration variables
 	#
 	# VIRTUAL_HOST ENV variables
 	#
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(WEB_SERVICE_SUFFIX) env | grep VIRTUAL_HOST
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(DOMA_APP_NAME)$(WEB_SERVICE_SUFFIX) env | grep VIRTUAL_HOST
 
 .PHONY: app-less
 app-less:		##@status start a LESS watcher
 	#
-	# Starting LESS `watch` for application '$(APP_NAME)'
-	# Usage: make watch app=<APP_NAME>
+	# Starting LESS `watch` for application '$(DOMA_APP_NAME)'
+	# Usage: make watch app=<DOMA_APP_NAME>
 	#
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(BUILDER_SERVICE_SUFFIX) watch lessc $(APP_ASSETS_SRC_LESS) $(APP_ASSETS_DEST_CSS)
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) watch lessc $(APP_ASSETS_SRC_LESS) $(APP_ASSETS_DEST_CSS)
 
 .PHONY: app-build-docs
 app-build-docs:		##@developer generate application documentation
@@ -285,8 +284,8 @@ app-build-docs:		##@developer generate application documentation
 	# Generating application documentation
 	#
 	### TODO: docker-compose run app$(BUILDER_SERVICE_SUFFIX) docco -o runtime/docco src/config/main.php src/config/env.php build/ci/test.sh web/index.php
-	docker-compose run app$(BUILDER_SERVICE_SUFFIX) vendor/bin/apidoc api $(DOCS_API_PATHS) $(DOCS_OUTPUT_PATH) --pageTitle="$(APP_NAME)" --interactive=0
-	docker-compose run app$(BUILDER_SERVICE_SUFFIX) vendor/bin/apidoc guide $(DOCS_GUIDE_PATHS) $(DOCS_OUTPUT_PATH) --pageTitle="$(APP_NAME)" --interactive=0
+	docker-compose run app$(BUILDER_SERVICE_SUFFIX) vendor/bin/apidoc api $(DOCS_API_PATHS) $(DOCS_OUTPUT_PATH) --pageTitle="$(DOMA_APP_NAME)" --interactive=0
+	docker-compose run app$(BUILDER_SERVICE_SUFFIX) vendor/bin/apidoc guide $(DOCS_GUIDE_PATHS) $(DOCS_OUTPUT_PATH) --pageTitle="$(DOMA_APP_NAME)" --interactive=0
 
 
 # App specific AWS targets
@@ -300,11 +299,11 @@ aws-create-project-bucket:
 	@$(AWS) s3 mb s3://hrzg.$(COMPOSE_PROJECT_NAME) && echo "."
 	@rm -rf $(shell pwd)/.s3/ && echo "."
 	@mkdir $(shell pwd)/.s3/ && echo "."
-	@mkdir $(shell pwd)/.s3/$(APP_NAME) && echo "."
-	@mkdir $(shell pwd)/.s3/$(APP_NAME)/dev && touch $(shell pwd)/.s3/$(APP_NAME)/dev/.empty && echo "."
-	@mkdir $(shell pwd)/.s3/$(APP_NAME)/test && touch $(shell pwd)/.s3/$(APP_NAME)/test/.empty && echo "."
-	@mkdir $(shell pwd)/.s3/$(APP_NAME)/prod && touch $(shell pwd)/.s3/$(APP_NAME)/prod/.empty && echo "."
-	@$(AWS) s3 sync $(shell pwd)/.s3/$(APP_NAME) s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(APP_NAME) --recursive --acl public-read && echo "."
+	@mkdir $(shell pwd)/.s3/$(DOMA_APP_NAME) && echo "."
+	@mkdir $(shell pwd)/.s3/$(DOMA_APP_NAME)/dev && touch $(shell pwd)/.s3/$(DOMA_APP_NAME)/dev/.empty && echo "."
+	@mkdir $(shell pwd)/.s3/$(DOMA_APP_NAME)/test && touch $(shell pwd)/.s3/$(DOMA_APP_NAME)/test/.empty && echo "."
+	@mkdir $(shell pwd)/.s3/$(DOMA_APP_NAME)/prod && touch $(shell pwd)/.s3/$(DOMA_APP_NAME)/prod/.empty && echo "."
+	@$(AWS) s3 sync $(shell pwd)/.s3/$(DOMA_APP_NAME) s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(DOMA_APP_NAME) --recursive --acl public-read && echo "."
 	@rm -rf $(shell pwd)/.s3 && echo "."
 	@echo "Done!"
 
@@ -315,17 +314,17 @@ aws-delete-project-bucket:
 
 .PHONY: aws-sync-prod-to-dev
 aws-sync-prod-to-dev:
-	@$(AWS) s3 sync s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(APP_NAME)/prod s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(APP_NAME)/dev --recursive --acl public-read --delete
+	@$(AWS) s3 sync s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(DOMA_APP_NAME)/prod s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(DOMA_APP_NAME)/dev --recursive --acl public-read --delete
 	@echo "Done!"
 
 .PHONY: aws-sync-prod-to-test
 aws-sync-prod-to-test:
-	@$(AWS) s3 sync s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(APP_NAME)/prod s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(APP_NAME)/test --recursive --acl public-read --delete
+	@$(AWS) s3 sync s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(DOMA_APP_NAME)/prod s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(DOMA_APP_NAME)/test --recursive --acl public-read --delete
 	@echo "Done!"
 
 .PHONY: aws-sync-test-to-dev
 aws-sync-test-to-dev:
-	@$(AWS) s3 sync s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(APP_NAME)/test s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(APP_NAME)/dev --recursive --acl public-read --delete
+	@$(AWS) s3 sync s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(DOMA_APP_NAME)/test s3://hrzg.$(COMPOSE_PROJECT_NAME)/$(DOMA_APP_NAME)/dev --recursive --acl public-read --delete
 	@echo "Done!"
 
 

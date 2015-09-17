@@ -6,7 +6,7 @@ REGISTRY_USER	 ?= username
 REGISTRY_PASS	 ?= secret
 PROJECT_REGISTRY ?= $(REGISTRY_HOST)/$(REGISTRY_USER)
 
-APP_NAME  ?= app
+DOMA_APP_NAME  ?= app
 
 BUILDER_SERVICE_SUFFIX 	?=
 WORKER_SERVICE_SUFFIX 	?=
@@ -54,10 +54,10 @@ help:
 .PHONY: docker-open
 docker-open:	##@docker open application web service
 	#
-	# Detecting web service port of '$(APP_NAME)'
+	# Detecting web service port of '$(DOMA_APP_NAME)'
 	#
-	docker-compose  -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) port $(APP_NAME)$(WEB_SERVICE_SUFFIX) 80 | sed 's/[0-9.]*://'
-	open http://$(DOCKER_HOST_IP):`docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) port $(APP_NAME)$(WEB_SERVICE_SUFFIX) 80 | sed 's/[0-9.]*://'`
+	docker-compose  -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) port $(DOMA_APP_NAME)$(WEB_SERVICE_SUFFIX) 80 | sed 's/[0-9.]*://'
+	open http://$(DOCKER_HOST_IP):`docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) port $(DOMA_APP_NAME)$(WEB_SERVICE_SUFFIX) 80 | sed 's/[0-9.]*://'`
 
 .PHONY: docker-bash
 docker-bash:		##@docker app=<prefix> Run a bash in builder container of
@@ -67,7 +67,7 @@ docker-bash:		##@docker app=<prefix> Run a bash in builder container of
 	# Use `exit` to end the bash session
 	# Heads up: Hit <enter> a few times if the bash is not coming up immediately.
 	#
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(APP_NAME)$(WORKER_SERVICE_SUFFIX) /bin/bash
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) run --rm $(DOMA_APP_NAME)$(WORKER_SERVICE_SUFFIX) /bin/bash
 
 
 .PHONY: docker-build
@@ -150,10 +150,10 @@ docker-run:		##@docker /!\ EXPERIMENTAL /!\ Usage: make docker-run service=<serv
 docker-start: _start docker-ps		##@docker Start project stack and show processes
 _start:
 	#
-	# Starting app '$(APP_NAME)'
+	# Starting app '$(DOMA_APP_NAME)'
 	# Run `make up` only after docker-compose.yml or Dockerfile changes
 	#
-	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) start $(APP_NAME)$(BUILDER_SERVICE_SUFFIX)
+	docker-compose -p $(COMPOSE_PROJECT_NAME) -f $(COMPOSE_FILE) start $(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX)
 
 .PHONY: docker-stop
 docker-stop:		##@docker Stop project stack
@@ -170,7 +170,7 @@ docker-tag:    	##@docker Tag images for registry, if build and tests have been 
 	#
 	###version := $(shell cat VERSION)
 	docker tag -f \
-		$(COMPOSE_PROJECT_NAME)_$(APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
+		$(COMPOSE_PROJECT_NAME)_$(DOMA_APP_NAME)$(BUILDER_SERVICE_SUFFIX) \
 		$(PROJECT_REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
 	docker images $(PROJECT_REGISTRY)/$(IMAGE_NAME)
 

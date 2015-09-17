@@ -6,10 +6,9 @@
 
 PROJECT_REGISTRY ?= registry/username
 COMPOSE_PROJECT_NAME ?= yii2project
-APP_NAMES ?= yii2app
-APP_FOLDERS ?= .
+DOMA_APP_NAMES ?= yii2app
+DOMA_APP_FOLDERS ?= .
 
-STACK_YML ?= docker-compose.yml
 BUILDER_SERVICE_SUFFIX ?= src
 WEB_SERVICE_SUFFIX ?= web
 
