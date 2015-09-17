@@ -69,7 +69,7 @@ docker-bash:		##@docker app=<prefix> Run a bash in builder container of
 
 
 .PHONY: docker-build
-docker-build: app-update-version		##@docker Build images for all services
+docker-build: 		##@docker Build images for all services
 	# ------------------------------------------------------------
 	#
 	# Building all services in stack '$(COMPOSE_PROJECT_NAME)'
