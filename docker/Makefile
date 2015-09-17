@@ -20,8 +20,6 @@ COMPOSE_FILE		?= docker-compose.yml
 DOCKER_HOST_IP 		?= $(shell echo $(DOCKER_HOST) | sed 's/tcp:\/\///' | sed 's/:[0-9.]*//')
 DOMA_ENVIRONMENT 	?= ""
 
-include ../phundament/4.0/Makefile
-
 # Add this Makefile's targets to help
 # -----------------------------------
 
