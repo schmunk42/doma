@@ -41,21 +41,3 @@ confirm:
 		echo "Aborted." ; \
 		exit 1 ; \
 	fi
-
-# Config targets
-# --------------
-
-.PHONY: NON-INTERACTIVE
-NON-INTERACTIVE:	##@config Do not ask for confirmation
-	$(eval DOMA_ENVIRONMENT := non-interactive)
-	@#
-
-
-# Doma targets
-# ------------
-
-doma-version:		##@doma Show doma version
-	@cd $(DOMA_DIR) && echo "дома `git describe`"
-
-doma-selfupdate:	##@doma Update doma (only works with git repo)
-	@cd $(DOMA_DIR) && echo "Current version: `git describe`" && git pull && echo "New version: `git describe`"
